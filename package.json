@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index",
@@ -16,6 +15,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "firebase": "^10.2.0",
+    "firebase-admin": "^11.10.1",
+    "multiformats": "^9.9.0",
     "nodemon": "^3.0.1"
   }
 }

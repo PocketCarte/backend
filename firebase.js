@@ -1,25 +1,15 @@
-// Documentação oficial do Firebase
-// Import the functions you need from the SDKs you need
-import firebase from "firebase/compat";
-import "firebase/firestore";
-import "firebase/auth";
-import dotenv from "dotenv";
-dotenv.config();
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+const admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_APIKEY,
-  authDomain: process.env.FIREBASE_AUTHDOMAIN,
-  projectId: process.env.FIREBASE_PROJECTID,
-  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
-  appId: process.env.FIREBASE_APPID,
+const app = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore(app);
+const auth = admin.auth(app);
+
+module.exports = {
+  app,
+  db,
+  auth,
 };
-
-// Initialize Firebase
-export const app = firebase.initializeApp(firebaseConfig);
-export const db = firebase.database(app);
-export const auth = firebase.auth(app);
-
