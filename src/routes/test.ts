@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { db } = require("../../firebase");
+import { db } from "../../firebase";
 
 router.get("/test/firebase", async (req, res) => {
   const snapshot = await db.collection("logs").get();
@@ -8,4 +8,4 @@ router.get("/test/firebase", async (req, res) => {
   return res.status(200).json(logs);
 });
 
-module.exports = router;
+export default router;
