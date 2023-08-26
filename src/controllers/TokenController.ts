@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { auth, firebaseAuth } from "../../firebase";
+import { firebaseAuth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 export const generate = async (req: Request, res: Response) => {
-    // auth.token
     const { email, password } = req.body;
     try {
         const credentials = await signInWithEmailAndPassword(firebaseAuth, email, password);
