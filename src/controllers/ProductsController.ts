@@ -75,3 +75,49 @@ export const getProductByCategoryAndProductId = async (
     return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
   }
 };
+
+export const addProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { name, price, image } = req.body;
+    const snapshotCategories = await db.collection("categories").doc(id).get();
+    await snapshotCategories.ref.collection("products").add({
+      name,
+      price,
+      image,
+    });
+
+    return res.status(200).json({ msg: "Produto criado com sucesso!" });
+  } catch (error: any) {
+    return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
+  }
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { id, productId } = req.params;
+    const { name, price, image } = req.body;
+    const snapshotCategories = await db.collection("categories").doc(id).get();
+    await snapshotCategories.ref.collection("products").doc(productId).set({
+      name,
+      price,
+      image,
+    });
+
+    return res.status(200).json({ msg: "Produto atualizado com sucesso!" });
+  } catch (error: any) {
+    return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { id, productId } = req.params;
+    const snapshotCategories = await db.collection("categories").doc(id).get();
+    await snapshotCategories.ref.collection("products").doc(productId).delete();
+
+    return res.status(200).json({ msg: "Produto deletado com sucesso!" });
+  } catch (error: any) {
+    return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
+  }
+};
