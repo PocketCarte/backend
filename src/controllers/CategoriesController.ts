@@ -6,8 +6,8 @@ import { generateLog } from "./LogsController";
 export const getCategories = async (req: Request, res: Response) => {
   const snapshot = await db.collection("categories").get();
   const categories: Category[] = snapshot.docs.map((doc) => {
-    const { name } = doc.data();
-    return { uid: doc.id, name };
+    const { name, products } = doc.data();
+    return { id: doc.id, name, products };
   });
 
   generateLog(req, `get categories`);
@@ -19,7 +19,7 @@ export const getCategory = async (req: Request, res: Response) => {
   try {
     const snapshot = await db.collection("categories").doc(id).get();
     const { name } = snapshot.data();
-    const category: Category = { uid: snapshot.id, name };
+    const category: Category = { id: snapshot.id, name };
 
     generateLog(req, `get category ${id}`);
     return res.status(200).json(category);

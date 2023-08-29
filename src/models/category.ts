@@ -1,4 +1,7 @@
+import { Product } from "./product";
+
 export interface Category {
-  uid: string;
+  id: string;
   name: string;
+  products?: Product[]
 }

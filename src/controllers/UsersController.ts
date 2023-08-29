@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { db, auth, firebaseAuth } from "../../firebase";
+import { db, auth } from "../../firebase";
 import { generateLog } from "./LogsController";
 
 export const getUsers = async (req: Request, res: Response) => {

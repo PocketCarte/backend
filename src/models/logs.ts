@@ -1,5 +1,5 @@
 export interface Log {
-    uid: string;
+    id: string;
     user_id: string;
     description: string;
     created_at: Date;

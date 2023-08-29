@@ -8,7 +8,7 @@ export const getLogs = async (req: Request, res: Response) => {
     const snapshot = await db.collection("logs").get();
     const logs: Log[] = snapshot.docs.map((doc) => {
       return {
-        uid: doc.id,
+        id: doc.id,
         user_id: doc.data().user_id,
         description: doc.data().description,
         created_at: doc.data().created_at,
@@ -25,7 +25,7 @@ export const getLog = async (req: Request, res: Response) => {
     const { id } = req.params;
     const snapshot = await db.collection("logs").doc(id).get();
     const log: Log = {
-      uid: snapshot.id,
+      id: snapshot.id,
       user_id: snapshot.data().user_id,
       description: snapshot.data().description,
       created_at: snapshot.data().created_at,
