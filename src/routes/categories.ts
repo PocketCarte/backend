@@ -14,12 +14,10 @@ const router = express.Router();
 
 router.get(
   "/categories",
-  verifyToken,
   getCategories
 );
 router.get(
   "/categories/:id",
-  verifyToken,
   getCategory
 );
 
