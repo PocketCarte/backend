@@ -3,6 +3,7 @@ dotenv.config();
 import * as admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 const app = admin.initializeApp({
   credential: admin.credential.cert("./serviceAccountKey.json"),
@@ -22,3 +23,4 @@ export default app;
 export const db = admin.firestore(app);
 export const auth = admin.auth(app);
 export const firebaseAuth = getAuth(firebaseApp);
+export const firebaseStorage = getStorage(firebaseApp);

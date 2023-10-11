@@ -1,45 +1,46 @@
 import express from "express";
-import {
-  addCategory,
-  deleteCategory,
-  getCategories,
-  getCategory,
-  updateCategory,
-} from "../controllers/CategoriesController";
 import { verifyToken } from "../middlewares/TokenMiddleware";
 import { verifyPermission } from "../middlewares/PermissionMiddleware";
 import { Permissions } from "../models/permissions";
+import {
+  addTable,
+  deleteTable,
+  getTable,
+  getTables,
+  updateTable,
+} from "../controllers/TableController";
 
 const router = express.Router();
 
 router.get(
-  "/categories",
+  "/tables",
   verifyToken,
-  getCategories
+  verifyPermission(Permissions.Gerente),
+  getTables
 );
 router.get(
-  "/categories/:id",
-  verifyToken,
-  getCategory
-);
-
-router.post(
-  "/categories",
+  "/tables/:id",
   verifyToken,
   verifyPermission(Permissions.Gerente),
-  addCategory
+  getTable
+);
+router.post(
+  "/tables",
+  verifyToken,
+  verifyPermission(Permissions.Gerente),
+  addTable
 );
 router.delete(
-  "/categories/:id",
+  "/tables/:id",
   verifyToken,
   verifyPermission(Permissions.Gerente),
-  deleteCategory
+  deleteTable
 );
 router.put(
-  "/categories/:id",
+  "/tables/:id",
   verifyToken,
   verifyPermission(Permissions.Gerente),
-  updateCategory
+  updateTable
 );
 
 export default router;

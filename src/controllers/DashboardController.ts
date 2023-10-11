@@ -1,22 +1,56 @@
 import { Request, Response } from "express";
 import { db, auth } from "../../firebase";
 import { generateLog } from "./LogsController";
-import jwt_decode from "jwt-decode";
+import { getTokenDecoded } from "../utils/token";
+import { Permissions } from "../models/permissions";
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getDashboardData = async (req: Request, res: Response) => {
     try {
-        const snapshot = await db.collection("users").get();
-        let users = [];
-        for (const doc of snapshot.docs) {
-            const { name, permission } = doc.data();
-            const userAuth = await auth.getUser(doc.id);
-            users.push({ id: doc.id, name, permission, email: userAuth.email })
+        let data = {};
+        const userTokenDecoded: any = await getTokenDecoded(req);
+        const user = await db.collection("users").doc(userTokenDecoded.user_id).get();
+        const { permission } = user.data();
+        if(permission <= Permissions.Cozinha){
+            const ordersRef = await db.collection("orders").get();
+            const orders = ordersRef.size;
+
+            const tableRequestsRef = await db.collection("table_requests").get();
+            const tableRequests = tableRequestsRef.size;
+
+            data['orders'] = orders;
+            data['table_requests'] = tableRequests;
+        }
+        if(permission <= Permissions.Gerente){
+            const tablesRef = await db.collection("tables").get();
+            const tables = tablesRef.size;
+
+            const categoriesRef = await db.collection("categories").get();
+            const categories = categoriesRef.size;
+
+            let products = 0;
+            for (const docCategory of categoriesRef.docs) {
+                const productsRef = await docCategory.ref
+                    .collection("products")
+                    .get();
+                products += productsRef.size;
+            }
+
+            data['tables'] = tables;
+            data['categories'] = categories;
+            data['products'] = products;
+        }
+        if(permission == Permissions.Administrador){
+            const usersRef = await db.collection("users").get();
+            const users = usersRef.size;
+
+            data['users'] = users;
         }
         
-        generateLog(req, 'get users');
-        return res.status(200).json(users);
+        generateLog(req, 'get dashboard');
+        return res.status(200).json(data);
     } catch (error: any) {
-        return res.status(400).json({ msg: "Ocorreu um erro ao listar os usuários" });
+        console.log(error);
+        return res.status(400).json({ msg: "Ocorreu um erro ao pegar os dados do dashboard" });
     }
 }
 
@@ -34,11 +68,8 @@ export const getUser = async (req: Request, res: Response) => {
 }
 
 export const loadUser = async (req: Request, res: Response) => {
-    const regex = /Bearer (.+)/i;
-
     try {
-        const token = req.headers['authorization'].match(regex)?.[1];
-        const userTokenDecoded: any = await jwt_decode(token);
+        const userTokenDecoded: any = await getTokenDecoded(req);
         const user = await db.collection("users").doc(userTokenDecoded.user_id).get();
         const userAuth = await auth.getUser(userTokenDecoded.user_id);
 
@@ -53,12 +84,11 @@ export const createUser = async (req: Request, res: Response) => {
     try {
         const { name, permission, email, password } = req.body;
         const resultCreateuser = await auth.createUser({ email, password });
-        await db.collection("users").doc(resultCreateuser.uid).set({ name, permission });
+        await db.collection("users").doc(resultCreateuser.uid).update({ name, permission });
 
         generateLog(req, `created user ${resultCreateuser.uid}`);
         return res.status(200).json({ msg: "Usuário criado com sucesso!" });
     } catch (error: any) {
-        console.log(error);
         return res.status(400).json({ msg: "Ocorreu um erro interno ao criar este usuário", debug: error.code });
     }
 }
@@ -66,10 +96,11 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, permission, email } = req.body;
+        const { name, permission, email, password } = req.body;
         const userAuth = await auth.getUser(id);
         await auth.updateUser(userAuth.uid, {
-            email
+            email,
+            password
         });
 
         generateLog(req, `updated user ${id}`);

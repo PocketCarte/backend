@@ -1,8 +1,9 @@
 import express from "express";
-import { generate } from "../controllers/TokenController";
+import { check, generate } from "../controllers/TokenController";
 
 const router = express.Router();
 
-router.get('/token', generate)
+router.post('/token', generate)
+router.get('/token/check', check)
 
 export default router;

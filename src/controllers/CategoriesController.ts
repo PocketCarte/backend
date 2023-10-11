@@ -4,10 +4,10 @@ import { db } from "../../firebase";
 import { generateLog } from "./LogsController";
 
 export const getCategories = async (req: Request, res: Response) => {
-  const snapshot = await db.collection("categories").get();
+  const snapshot = await db.collection("categories").orderBy('order', 'asc').get();
   const categories: Category[] = snapshot.docs.map((doc) => {
-    const { name, products } = doc.data();
-    return { id: doc.id, name, products };
+    const { name, products, order } = doc.data();
+    return { id: doc.id, name, products, order };
   });
 
   generateLog(req, `get categories`);
@@ -18,8 +18,8 @@ export const getCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const snapshot = await db.collection("categories").doc(id).get();
-    const { name } = snapshot.data();
-    const category: Category = { id: snapshot.id, name };
+    const { name, order } = snapshot.data();
+    const category: Category = { id: snapshot.id, name, order };
 
     generateLog(req, `get category ${id}`);
     return res.status(200).json(category);
@@ -29,8 +29,8 @@ export const getCategory = async (req: Request, res: Response) => {
 };
 
 export const addCategory = async (req: Request, res: Response) => {
-  const category: Category = req.body;
   try {
+    const category: Category = req.body;
     const categorySnapshot = await db.collection("categories").add(category);
 
     generateLog(req, `added category ${categorySnapshot.id}`);
@@ -54,12 +54,12 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
 export const updateCategory = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const category: Category = req.body;
   try {
+    const category: Category = req.body;
     const categorySnapshot = await db
       .collection("categories")
       .doc(id)
-      .set(category);
+      .update(category);
 
     generateLog(req, `updated category ${id}`);
     return res.status(200).json({ categorySnapshot });
