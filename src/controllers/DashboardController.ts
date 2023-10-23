@@ -47,7 +47,14 @@ export const getDashboardData = async (req: Request, res: Response) => {
             const usersRef = await db.collection("users").get();
             const users = usersRef.size;
 
+            let patrimony = 0;
+            const snapshot = await db.collection("tables_finished").get();
+            snapshot.docs.forEach((doc) => {
+                patrimony += doc.data().orders.total_price;
+            });
+
             data['users'] = users;
+            data['patrimony'] = patrimony;
         }
         
         generateLog(req, 'get dashboard');
