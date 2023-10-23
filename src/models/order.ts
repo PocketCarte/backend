@@ -4,6 +4,8 @@ export interface Order {
     table_name?: string;
     waiter_id?: string;
     description: string;
+    category_id: string;
+    product_id: string;
     product_name: string;
     product_quantity: number;
     price_unity: number;

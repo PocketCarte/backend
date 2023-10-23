@@ -16,7 +16,9 @@ export const getOrders = async (req: Request, res: Response) => {
           id: orderDoc.id,
           table_id: tableDoc.id,
           table_name: tableDoc.data().name,
-          description: orderDoc.data().name,
+          description: orderDoc.data().description,
+          category_id: orderDoc.data().category_id,
+          product_id: orderDoc.data().product_id,
           product_name: orderDoc.data().product_name,
           product_quantity: orderDoc.data().product_quantity,
           price_unity: orderDoc.data().price_unity,
@@ -24,7 +26,6 @@ export const getOrders = async (req: Request, res: Response) => {
           status: orderDoc.data().status,
           created_at: orderDoc.data().created_at,
         };
-        console.log("orderDoc", orderDoc);
         orders.push(order);
       }
     }
@@ -66,7 +67,9 @@ export const getOrder = async (req: Request, res: Response) => {
           id: orderDoc.id,
           table_id: tableDoc.id,
           table_name: tableDoc.data().name,
-          description: orderDoc.data().name,
+          description: orderDoc.data().description,
+          category_id: orderDoc.data().category_id,
+          product_id: orderDoc.data().product_id,
           product_name: orderDoc.data().product_name,
           product_quantity: orderDoc.data().product_quantity,
           price_unity: orderDoc.data().price_unity,
@@ -88,7 +91,7 @@ export const getOrder = async (req: Request, res: Response) => {
 
 export const addOrder = async (req: Request, res: Response) => {
   try {
-    const { table_id, description, product_id, quantity } = req.body;
+    const { table_id, product_id, quantity, description } = req.body;
     const snapshotTable = await db.collection("tables").doc(table_id).get();
     if (!snapshotTable.exists) {
       return res.status(404).json({ msg: "Mesa não encontrada!" });
@@ -116,8 +119,9 @@ export const addOrder = async (req: Request, res: Response) => {
       return res.status(404).json({ msg: "Produto não encontrado!" });
     }
 
-    await snapshotTable.ref.collection("orders").add({
-      description,
+    const order = await snapshotTable.ref.collection("orders").add({
+      category_id: product.category_id,
+      product_id: product.id,
       product_name: product.name,
       product_quantity: quantity,
       price_unity: product.price,
@@ -125,11 +129,18 @@ export const addOrder = async (req: Request, res: Response) => {
       created_at: new Date().toISOString(),
       status: "pending",
     });
+
+    if(req.body["description"]){
+      await snapshotTable.ref.collection("orders").doc(order.id).update({
+        description: req.body["description"]
+      })
+    }
     for (let client of clients) {
       client.emit("refresh_orders");
     }
     return res.status(200).json({ msg: "Pedido criado com sucesso!" });
   } catch (error: any) {
+    console.log(error);
     return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
   }
 };
@@ -137,7 +148,7 @@ export const addOrder = async (req: Request, res: Response) => {
 export const updateOrder = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const params = {};
+    let params = {};
     if (req.body["description"]) {
       params["description"] = req.body.description;
     }
@@ -183,6 +194,7 @@ export const updateOrder = async (req: Request, res: Response) => {
         .get();
 
       if(snapshotProduct.exists){
+        console.log('params', params);
         await docTable.ref
         .collection("orders")
         .doc(id)

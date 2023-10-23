@@ -5,6 +5,7 @@ import { Permissions } from "../models/permissions";
 import {
   addTable,
   deleteTable,
+  finishTable,
   getTable,
   getTables,
   updateTable,
@@ -41,6 +42,12 @@ router.put(
   verifyToken,
   verifyPermission(Permissions.Gerente),
   updateTable
+);
+router.post(
+  "/tables/:id/finish",
+  verifyToken,
+  verifyPermission(Permissions.Gerente),
+  finishTable
 );
 
 export default router;

@@ -11,8 +11,12 @@ export const getDashboardData = async (req: Request, res: Response) => {
         const user = await db.collection("users").doc(userTokenDecoded.user_id).get();
         const { permission } = user.data();
         if(permission <= Permissions.Cozinha){
-            const ordersRef = await db.collection("orders").get();
-            const orders = ordersRef.size;
+            let orders = 0;
+            const tablesSnapshot = await db.collection("tables").get();
+            for (const tableDoc of tablesSnapshot.docs) {
+                const ordersSnapshot = await tableDoc.ref.collection("orders").get();
+                orders += ordersSnapshot.size;
+            }
 
             const tableRequestsRef = await db.collection("table_requests").get();
             const tableRequests = tableRequestsRef.size;

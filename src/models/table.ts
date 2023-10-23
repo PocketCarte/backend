@@ -1,4 +1,3 @@
-import { Order } from "./order";
 import { TableRequest } from "./table_request";
 
 export interface Table {
@@ -7,5 +6,5 @@ export interface Table {
     status: number;
     name: string;
     table_requests?: TableRequest[];
-    orders?: Order[];
+    orders?: any;
 }

@@ -81,7 +81,6 @@ export const addProduct = async (req: any, res: any) => {
   try {
     const { id } = req.params;
     const { name, price } = req.body;
-    console.log('file', req.file);
     const fileUploaded = await uploadFile("image", req.file, uuid());
     const snapshotCategories = await db.collection("categories").doc(id).get();
     await snapshotCategories.ref.collection("products").add({
