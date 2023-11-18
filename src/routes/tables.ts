@@ -15,16 +15,13 @@ const router = express.Router();
 
 router.get(
   "/tables",
-  verifyToken,
-  verifyPermission(Permissions.Gerente),
   getTables
 );
 router.get(
   "/tables/:id",
-  verifyToken,
-  verifyPermission(Permissions.Gerente),
   getTable
 );
+
 router.post(
   "/tables",
   verifyToken,

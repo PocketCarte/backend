@@ -3,7 +3,7 @@ export interface Order {
     table_id: string;
     table_name?: string;
     waiter_id?: string;
-    description: string;
+    description?: string;
     category_id: string;
     product_id: string;
     product_name: string;

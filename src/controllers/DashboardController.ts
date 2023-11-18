@@ -24,10 +24,13 @@ export const getDashboardData = async (req: Request, res: Response) => {
             data['orders'] = orders;
             data['table_requests'] = tableRequests;
         }
-        if(permission <= Permissions.Gerente){
+        if(permission <= Permissions.Garcom){
             const tablesRef = await db.collection("tables").get();
             const tables = tablesRef.size;
 
+            data['tables'] = tables;
+        }
+        if(permission <= Permissions.Gerente){
             const categoriesRef = await db.collection("categories").get();
             const categories = categoriesRef.size;
 
@@ -39,7 +42,6 @@ export const getDashboardData = async (req: Request, res: Response) => {
                 products += productsRef.size;
             }
 
-            data['tables'] = tables;
             data['categories'] = categories;
             data['products'] = products;
         }

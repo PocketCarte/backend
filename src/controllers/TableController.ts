@@ -80,7 +80,7 @@ export const addTable = async (req: Request, res: Response) => {
       qr_code: ''
     };
     const tableSnapshot = await db.collection("tables").add(table);
-    const qr_code = await qrcode.toDataURL(`http://localhost:4200/tables/${tableSnapshot.id}`);
+    const qr_code = await qrcode.toDataURL(`http://192.168.1.13:4200/menu?table_id=${tableSnapshot.id}`);
     await db.collection("tables").doc(tableSnapshot.id).update({
       qr_code
     })
@@ -140,11 +140,10 @@ export const finishTable = async (req: Request, res: Response) => {
       if(status !== "canceled"){
         totalPrice += parseInt(price_total);
       }
-      const order: Order = {
+      let order: Order = {
         id: orderDoc.id,
         table_id: snapshot.id,
         table_name: snapshot.data().name,
-        description: orderDoc.data().description,
         category_id: orderDoc.data().category_id,
         product_id: orderDoc.data().product_id,
         product_name: orderDoc.data().product_name,
@@ -154,6 +153,9 @@ export const finishTable = async (req: Request, res: Response) => {
         status: orderDoc.data().status,
         created_at: orderDoc.data().created_at,
       };
+      if(orderDoc.data().description){
+        order['description'] = orderDoc.data().description;
+      }
       ordersList.push(order);
     }
 
@@ -182,6 +184,7 @@ export const finishTable = async (req: Request, res: Response) => {
     generateLog(req, `get table ${id}`);
     return res.status(200).json({ msg: "Mesa finalizada com sucesso!" });
   } catch (error: any) {
+    console.log(error);
     return res.status(400).json({ error });
   }
 }
