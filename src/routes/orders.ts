@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.post('/new_order', verifySystemToken, addOrder);
 
-router.post('/orders', verifyToken, verifyPermission(Permissions.Garcom), addOrder);
-router.put('/orders/:id', verifyToken, verifyPermission(Permissions.Garcom), updateOrder);
-router.get('/orders', verifyToken, verifyPermission(Permissions.Garcom), getOrders);
-router.get('/orders/:id', verifyToken, verifyPermission(Permissions.Garcom), getOrders);
+router.post('/orders', verifyToken, verifyPermission(Permissions.Cozinha), addOrder);
+router.put('/orders/:id', verifyToken, verifyPermission(Permissions.Cozinha), updateOrder);
+router.get('/orders', verifyToken, verifyPermission(Permissions.Cozinha), getOrders);
+router.get('/orders/:id', verifyToken, verifyPermission(Permissions.Cozinha), getOrders);
 
 export default router;
