@@ -42,7 +42,7 @@ export const checkTableRequestToken = async (req: Request, res: Response) => {
     try {
       jwt.verify(id, SECRET);
     } catch (error) {
-      return res.status(401).json({ msg: "Token inválido" });
+      return res.status(200).json({ logged: false, valid: false, msg: "Token inválido" });
     }
 
     const snapshotTables = await db.collection("tables").get();
@@ -69,18 +69,18 @@ export const checkTableRequestToken = async (req: Request, res: Response) => {
     }
 
     if (!tableRequest) {
-      return res.status(404).json({ msg: "Requisição de mesa não encontrada." });
+      return res.status(200).json({ logged: false, valid: false, msg: "Requisição de mesa não encontrada." });
     }
 
     if (!tableRequest.active) {
-      return res.status(401).json({ msg: "Token não está ativo" });
+      return res.status(200).json({ logged: true, valid: false, msg: "Token não está ativo" });
     }
 
     return res
       .status(200)
-      .json({ msg: "Token válido." });
+      .json({ logged: true, valid: true, msg: "Token válido." });
   } catch (error: any) {
-    return res.status(400).json({ msg: "Ocorreu um erro ao listar os logs" });
+    return res.status(200).json({ logged: true, valid: false, msg: "Erro interno ao verificar token" });
   }
 };
 

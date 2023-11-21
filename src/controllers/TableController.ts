@@ -80,7 +80,7 @@ export const addTable = async (req: Request, res: Response) => {
       qr_code: ''
     };
     const tableSnapshot = await db.collection("tables").add(table);
-    const qr_code = await qrcode.toDataURL(`http://192.168.1.13:4200/menu?table_id=${tableSnapshot.id}`);
+    const qr_code = await qrcode.toDataURL(`http://192.168.3.13:4200/menu?table_id=${tableSnapshot.id}`);
     await db.collection("tables").doc(tableSnapshot.id).update({
       qr_code
     })
