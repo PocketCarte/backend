@@ -9,9 +9,8 @@ dotenv.config();
 const SECRET = process.env.SECRET || "adasdasa";
 
 export const verifySystemToken = async (req: Request, res: Response, next: NextFunction) => {
-  const regex = /Bearer (.+)/i;
   try {
-    const id = req.headers['authorization'].match(regex)?.[1];
+    const id = req.header('PocketCarte-System-Token');
 
     try {
       jwt.verify(id, SECRET);

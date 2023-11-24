@@ -17,6 +17,7 @@ export const getProducts = async (req: any, res: any) => {
           id: docProducts.id,
           category_id: docCategory.id,
           name: docProducts.data().name,
+          description: docProducts.data().description,
           price: docProducts.data().price,
           image: docProducts.data().image.link,
         };
@@ -42,6 +43,7 @@ export const getProductsByCategory = async (req: any, res: any) => {
         id: docProducts.id,
         category_id: snapshotCategory.id,
         name: docProducts.data().name,
+        description: docProducts.data().description,
         price: docProducts.data().price,
         image: docProducts.data().image.link,
       };
@@ -68,6 +70,7 @@ export const getProductByCategoryAndProductId = async (
       id: snapshotProducts.id,
       category_id: snapshotCategory.id,
       name: snapshotProducts.data().name,
+      description: snapshotProducts.data().description,
       price: snapshotProducts.data().price,
       image: snapshotProducts.data().image.link,
     };
@@ -80,11 +83,12 @@ export const getProductByCategoryAndProductId = async (
 export const addProduct = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const { name, price } = req.body;
+    const { name, description, price } = req.body;
     const fileUploaded = await uploadFile("image", req.file, uuid());
     const snapshotCategories = await db.collection("categories").doc(id).get();
     await snapshotCategories.ref.collection("products").add({
       name,
+      description,
       price,
       image: fileUploaded,
     });
@@ -99,7 +103,7 @@ export const addProduct = async (req: any, res: any) => {
 export const updateProduct = async (req: any, res: any) => {
   try {
     const { id, productId } = req.params;
-    const { name, price } = req.body;
+    const { name, description, price } = req.body;
 
     const snapshotCategories = await db.collection("categories").doc(id).get();
     
@@ -119,6 +123,7 @@ export const updateProduct = async (req: any, res: any) => {
     
     await snapshotProduct.update({
       name,
+      description,
       price,
     });
 

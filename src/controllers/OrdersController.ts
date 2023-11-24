@@ -109,6 +109,7 @@ export const addOrder = async (req: Request, res: Response) => {
           id: product_id,
           category_id: docCategory.id,
           name: snapshotProduct.data().name,
+          description: snapshotProduct.data().description,
           image: snapshotProduct.data().image,
           price: snapshotProduct.data().price,
         };
@@ -167,6 +168,7 @@ export const updateOrder = async (req: Request, res: Response) => {
             id: product_id,
             category_id: docCategory.id,
             name: snapshotProduct.data().name,
+            description: snapshotProduct.data().description,
             image: snapshotProduct.data().image,
             price: snapshotProduct.data().price,
           };

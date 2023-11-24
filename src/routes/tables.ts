@@ -43,7 +43,7 @@ router.put(
 router.post(
   "/tables/:id/finish",
   verifyToken,
-  verifyPermission(Permissions.Gerente),
+  verifyPermission(Permissions.Garcom),
   finishTable
 );
 

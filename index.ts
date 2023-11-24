@@ -14,6 +14,12 @@ io.on('connection', (client) => {
   console.log(`Cliente no WS conectado ${client.id}`)
   clients.push(client);
 
+  client.on("waiter_message", (message) => {
+    for (let client of clients) {
+      client.emit("waiter_message", message);
+    }
+  })
+
   client.on('disconnect', () => {
     clients.splice(clients.indexOf(client), 1);
     console.log(`Cliente no WS desconectado ${client.id}`)

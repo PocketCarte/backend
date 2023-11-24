@@ -33,7 +33,7 @@ export const getTable = async (req: Request, res: Response) => {
         canFinish = false;
       }
       if(status !== "canceled"){
-        totalPrice += parseInt(price_total);
+        totalPrice += Number(price_total);
       }
       const order: Order = {
         id: orderDoc.id,
@@ -45,7 +45,7 @@ export const getTable = async (req: Request, res: Response) => {
         product_name: orderDoc.data().product_name,
         product_quantity: orderDoc.data().product_quantity,
         price_unity: orderDoc.data().price_unity,
-        price_total: orderDoc.data().price_total,
+        price_total: Number(orderDoc.data().price_total),
         status: orderDoc.data().status,
         created_at: orderDoc.data().created_at,
       };
