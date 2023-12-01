@@ -53,8 +53,6 @@ export const checkTableRequestToken = async (req: Request, res: Response) => {
         .get();
 
       for (const docTableRequests of snapshotTableRequests.docs) {
-        console.log("teste 1", docTableRequests.data().token)
-        console.log("teste 2", id)
         if (docTableRequests.data().token === id) {
           const tr: TableRequest = {
             id: docTableRequests.id,

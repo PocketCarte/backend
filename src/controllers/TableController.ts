@@ -130,6 +130,7 @@ export const finishTable = async (req: Request, res: Response) => {
     const snapshot = await db.collection("tables").doc(id).get();
     const { name, qr_code, status } = snapshot.data();
     const ordersSnapshot = await snapshot.ref.collection("orders").get();
+    const requestsSnapshot = await snapshot.ref.collection("requests").get();
 
     let ordersList: Order[] = []
     let canFinish = true;
@@ -179,6 +180,10 @@ export const finishTable = async (req: Request, res: Response) => {
     })
     for (const orderDoc of ordersSnapshot.docs) {
       orderDoc.ref.delete();
+    }
+
+    for (const requestDoc of requestsSnapshot.docs) {
+      requestDoc.ref.delete();
     }
 
     generateLog(req, `get table ${id}`);

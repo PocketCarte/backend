@@ -11,7 +11,6 @@ export const io = new Server(server, { cors: { origin: '*' } });
 export let clients = [];
 
 io.on('connection', (client) => {
-  console.log(`Cliente no WS conectado ${client.id}`)
   clients.push(client);
 
   client.on("waiter_message", (message) => {
@@ -22,7 +21,6 @@ io.on('connection', (client) => {
 
   client.on('disconnect', () => {
     clients.splice(clients.indexOf(client), 1);
-    console.log(`Cliente no WS desconectado ${client.id}`)
   })
 })
 
