@@ -10,12 +10,12 @@ const app = admin.initializeApp({
 });
 
 const firebaseApp = initializeApp({
-  apiKey: "AIzaSyCtvgc6CithGOlW9j3NTV-WWX3T3OoFd6M",
-  authDomain: "pocketcarte.firebaseapp.com",
-  projectId: "pocketcarte",
-  storageBucket: "pocketcarte.appspot.com",
-  messagingSenderId: "172952952502",
-  appId: "1:172952952502:web:5661609912878c97a8d017"
+  apiKey: process.env.FIREBASE_APIKEY,
+  authDomain: process.env.FIREBASE_AUTHDOMAIN,
+  projectId: process.env.FIREBASE_PROJECTID,
+  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+  appId: process.env.FIREBASE_APPID
 })
 
 export default app;
