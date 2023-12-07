@@ -4,6 +4,8 @@ import { generateLog } from "./LogsController";
 import { Table } from "../models/table";
 import qrcode from "qrcode";
 import { Order } from "src/models/order";
+import dotenv from "dotenv"
+dotenv.config();
 
 export const getTables = async (req: Request, res: Response) => {
   const snapshot = await db.collection("tables").get();
@@ -79,8 +81,10 @@ export const addTable = async (req: Request, res: Response) => {
       name,
       qr_code: ''
     };
+
+    
     const tableSnapshot = await db.collection("tables").add(table);
-    const qr_code = await qrcode.toDataURL(`http://192.168.3.13:4200/menu?table_id=${tableSnapshot.id}`);
+    const qr_code = await qrcode.toDataURL(`http://${process.env.DOMAIN}:4200/menu?table_id=${tableSnapshot.id}`);
     await db.collection("tables").doc(tableSnapshot.id).update({
       qr_code
     })
